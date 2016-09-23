@@ -32,7 +32,7 @@ After the app has initialised you are able to access the static faker method via
 let { Customer } = app.models
 
 Customer.faker({
-    name: 'New Name' // this will overwrite the faker fakeness
+    name: 'New Name' // this will overwrite the faker fakeness if you want
 })
 .then(customer => {
 // customer with faked data
@@ -45,6 +45,28 @@ A simple way to create random data for testing and seeding
 ## Installation
 
 ```npm install faker loopback-faker-mixin```
+
+=============
+
+Add the `mixins` property to your `server/model-config.json`:
+
+```json
+{
+  "_meta": {
+    "sources": [
+      "loopback/common/models",
+      "loopback/server/models",
+      "../common/models",
+      "./models"
+    ],
+    "mixins": [
+      "loopback/common/mixins",
+      "<path-to-your>/node_modules/loopback-faker-mixin",
+      "../common/mixins"
+    ]
+  }
+}
+```
 
 ## API Reference
 
