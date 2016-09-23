@@ -1,0 +1,24 @@
+{
+  "name": "loopback-faker-mixin",
+  "version": "0.0.1",
+  "description": "Loopback Mixin for generating random data on model properties",
+  "main": "faker.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/NextFaze/loopback-faker-mixin.git"
+  },
+  "keywords": [
+    "Faker",
+    "Loopback",
+    "Mixin"
+  ],
+  "author": "NextFaze",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/NextFaze/loopback-faker-mixin/issues"
+  },
+  "homepage": "https://github.com/NextFaze/loopback-faker-mixin#readme"
+}
