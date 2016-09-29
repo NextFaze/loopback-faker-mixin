@@ -18,20 +18,26 @@
  * }
 */
 var faker = require('faker')
+var FakerMixin = require('./lib').FakerMixin
+var BulkCreate = require('./lib').BulkCreate
 module.exports = function (Model, options) {
-  if (options === void 0) { options = {} }
-  Model.forEachProperty(function (key, val) {
-    if (Object.keys(val).indexOf('faker') > -1) {
-      options[key] = val['faker']
-    }
-  })
+  let a = new FakerMixin(Model, faker, options)
   Model.faker = function (defaults) {
-    if (defaults === void 0) { defaults = {} }
-    return function (options) {
-      var a = {}
-      for (var x in defaults)
-        a[x] = faker.fake('{{' + defaults[x] + '}}')
-      return this.create(Object.assign({}, a, options))
+      return function (obj) {
+        let a = FakerMixin.callDefaults(defaults)
+        return this.create(Object.assign({}, a, obj))
     }
-  }(options)
+  }(a)
+
+  Model.bulkFaker = function (defaults) {
+    return function (obj, options) {
+      let a = new BulkCreate(defaults, obj.globals, obj.individuals, options)
+      return new Promise((resolve, reject) => {
+        this.bulkCreate(a, (err, data) => {
+          if (err) return reject(err)
+          return resolve(data)
+        })
+      })
+    }
+  }(a)
 }
