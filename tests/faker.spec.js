@@ -43,6 +43,6 @@ describe('should take faker and apply arguments', () => {
     let a = new FakerMixin(MockModel, mockFaker, mockOptions)
     console.log(a.init())
     expect(a.init()).to.have.all.keys('name', 'password', 'name1', 'password1')
-     expect(a.init()).to.not.have.keys('description')
+    expect(a.init()).to.not.have.keys('description')
   })
 })
