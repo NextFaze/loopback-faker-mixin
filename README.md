@@ -37,6 +37,20 @@ Customer.faker({
 .then(customer => {
 // customer with faked data
 })
+
+Customer.bulkFaker({
+    global: {
+        name: 'Every One Gets this Name'
+    },
+    individuals: [
+        {
+            name: 'except this guy... this is his name'
+        }
+    ]
+}).then(customers => {
+    let individual = customers[0]
+    individual.name === 'except this guy... this is his name'
+})
 ```
 ## Motivation
 
