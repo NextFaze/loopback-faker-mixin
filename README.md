@@ -49,6 +49,7 @@ Customer.bulkFaker({
     ]
 }, 10).then(customers => {
     let individual = customers[0]
+    customers.length === 10
     individual.name === 'except this guy... this is his name'
 })
 ```
