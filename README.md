@@ -2,7 +2,7 @@
 
 ## Synopsis
 
-A mixin for loopback using the faker library takes advantage of the ```faker.fake({{name.firstName}}')``` [method](https://github.com/marak/Faker.js/).
+A mixin for loopback using the [faker](https://github.com/marak/Faker.js/) library.
 ## Code Example
 
 In your ```model.json```
