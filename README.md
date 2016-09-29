@@ -13,7 +13,7 @@ In your ```model.json```
     "properties": {
         "name": {
             "type": "string",
-            "faker": "name.firstName" //This will overwrite anything in the mixin options
+            faker: 'faker.method' || { method: 'faker.method', args: ['arg1']} see https://github.com/marak/Faker.js/
         }
     },
     "mixins": {
