@@ -39,7 +39,7 @@ Customer.faker({
 })
 
 Customer.bulkFaker({
-    global: {
+    globals: {
         name: 'Every One Gets this Name'
     },
     individuals: [
