@@ -1,4 +1,4 @@
-'use-strict'
+'use strict'
 let expect = require('chai').expect
 let assert = require('chai').assert
 let FakerMixin = require('../lib').FakerMixin
