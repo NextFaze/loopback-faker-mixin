@@ -1,25 +1,25 @@
 'use strict'
-let expect = require('chai').expect
-let assert = require('chai').assert
-let FakerMixin = require('../lib').FakerMixin
-let BulkFaker = require('../lib').BulkFaker
+const expect = require('chai').expect
+const assert = require('chai').assert
+const FakerMixin = require('../lib').FakerMixin
+const BulkFaker = require('../lib').BulkFaker
 
-let mockFaker = {
+const mockFaker = {
   name: {
     firstName: function () {},
     takesOneArg: function (arg) {}
   }
 }
-let mockOptions = {
+const mockOptions = {
   name1: 'name.firstName',
   password1: {
     method: 'name.takesOneArg',
     args: [1]
   }
 }
-let MockModel = {
+const MockModel = {
   forEachProperty: function (b) {
-    let a = {
+    const a = {
       name: {
         type: 'String',
         faker: 'name.firstName'
