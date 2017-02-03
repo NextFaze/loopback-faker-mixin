@@ -72,3 +72,9 @@ describe('bulk faker without arguments', () => {
     assert.lengthOf(d, 0)
   })
 })
+describe('invalid arguments', () => {
+  it('should should throw an error if the argument passed is not a function', () => {
+    let a = new FakerMixin(MockModel, { company: { name: false } }, { name: 'company.name' })
+    expect(a.init.bind(a)).to.throw('company.name does not exist on faker')
+  })
+});
