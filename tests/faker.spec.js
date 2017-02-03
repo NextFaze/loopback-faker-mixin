@@ -1,8 +1,12 @@
 'use strict'
-const expect = require('chai').expect
-const assert = require('chai').assert
-const FakerMixin = require('../lib').FakerMixin
-const BulkFaker = require('../lib').BulkFaker
+const chai = require('chai')
+chai.use(require('chai-spies'))
+const expect = chai.expect
+const assert = chai.assert
+const moment = require('moment')
+const Mixin = require('../lib')
+const FakerMixin = Mixin.FakerMixin
+const BulkFaker = Mixin.BulkFaker
 
 const mockFaker = {
   name: {
@@ -40,7 +44,28 @@ const MockModel = {
     })
   }
 }
-
+const MockModelMoment = {
+  forEachProperty: function (b) {
+    const a = {
+      date: {
+        source: 'moment',
+        construct: true,
+        method: 'add',
+        args: ['1', 'week'],
+        format: 'DD/MM/YYYY'
+      }
+    }
+    Object.keys(a).forEach((key) => {
+      b(key, a[key])
+    })
+  }
+}
+class MockMoment {
+  constructor(date = '1/2/3456') {
+    this.add = chai.spy(() => this.date = '2/3/4567')
+    this.format = chai.spy(() => this.date)
+  }
+}
 describe('should take faker and apply arguments', () => {
   it('should call a faker method', () => {
     let a = new FakerMixin(MockModel, mockFaker, mockOptions)
@@ -48,7 +73,6 @@ describe('should take faker and apply arguments', () => {
     expect(a.init()).to.not.have.keys('description')
   })
 })
-
 describe('bulk faker should create bulk fakers', () => {
   it('should create a whole heap fake objects', () => {
     let a = new FakerMixin(MockModel, mockFaker, mockOptions)
@@ -77,4 +101,93 @@ describe('invalid arguments', () => {
     let a = new FakerMixin(MockModel, { company: { name: false } }, { name: 'company.name' })
     expect(a.init.bind(a)).to.throw('company.name does not exist on faker')
   })
-});
+})
+describe('custom sources', () => {
+  it('should work with arbitrary module sources', () => {
+    let a = new FakerMixin(MockModelMoment, mockFaker, {
+      amount: {
+        source: '../tests/mock-module',
+        method: 'number'
+      },
+      color: {
+        source: '../tests/mock-module',
+        method: 'color'
+      }
+    }).init()
+    let b = BulkFaker.callDefaults(a)
+    var expected = moment().add(1, 'week').format('DD/MM/YYYY')
+    expect(b).to.eql({
+      amount: 4,
+      color: '#FFFFFF'
+    })
+  })
+  it('should work with a custom source that must be constructed', () => {
+    let a = new FakerMixin(MockModelMoment, mockFaker, {date: {
+        source: '../tests/mock-moment',
+        construct: true,
+        method: 'format',
+        args: ['Number: %']
+    }}).init()
+    let b = BulkFaker.callDefaults(a)
+    expect(b).to.eql({
+      date: 'Number: 1'
+    })
+  })
+  it('should allow chaining multiple arguments constructed', () => {
+    let a = new FakerMixin(MockModelMoment, mockFaker, {date: {
+        source: '../tests/mock-moment',
+        construct: true,
+        method: 'add',
+        args: [1, 'week'],
+        then: {
+          method: 'format',
+          args: ['No %']
+        }
+    }}).init()
+    let b = BulkFaker.callDefaults(a)
+    expect(b).to.eql({
+      date: 'No 2'
+    })
+  })
+  it('should chain all the things', () => {
+    let a = new FakerMixin(MockModelMoment, mockFaker, {date: {
+        source: '../tests/mock-moment',
+        construct: true,
+        method: 'add',
+        args: [1, 'week'],
+        then: {
+          method: 'add',
+          args: [1, 'week'],
+          then: {
+            method: 'format',
+            args: ['No %']
+          }
+        }
+    }}).init()
+    let b = BulkFaker.callDefaults(a)
+    expect(b).to.eql({
+      date: 'No 3'
+    })
+  })
+
+  it('should call on a new instance of the module each time', () => {
+    let a = new FakerMixin(MockModelMoment, mockFaker, {date: {
+        source: '../tests/mock-moment',
+        construct: true,
+        method: 'add',
+        args: [1, 'week'],
+        then: {
+          method: 'format',
+          args: ['No %']
+        }
+    }}).init()
+    let b = BulkFaker.callDefaults(a)
+    let c = BulkFaker.callDefaults(a)
+    expect(b).to.eql({
+      date: 'No 2'
+    })
+    expect(c).to.eql({
+      date: 'No 2'
+    })
+  })
+})
